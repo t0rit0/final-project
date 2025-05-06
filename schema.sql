@@ -1,16 +1,24 @@
--- MySQL schema for CSC 3170 Group Project
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+DROP SCHEMA IF EXISTS `rdam`;
+
+CREATE SCHEMA IF NOT EXISTS `rdam` DEFAULT CHARACTER SET utf8;
+USE `rdam`;
+
 CREATE TABLE School (
-    Name VARCHAR(100) PRIMARY KEY,
+    SchoolName VARCHAR(100) PRIMARY KEY,
     Location VARCHAR(100),
     Website VARCHAR(100),
     Dean VARCHAR(100),
     EstablishmentYear INT,
-    AvgGPA DECIMAL(3,2),
+    SchoolAvgGPA DECIMAL(3,2),
     Scholarships VARCHAR(255)
 );
 
 CREATE TABLE College (
-    Name VARCHAR(100) PRIMARY KEY,
+    CollegeName VARCHAR(100) PRIMARY KEY,
     Description TEXT,
     Office VARCHAR(100),
     Budget DECIMAL(12,2),
@@ -21,9 +29,9 @@ CREATE TABLE College (
 );
 
 CREATE TABLE Major (
-    Name VARCHAR(100) PRIMARY KEY,
+    MajorName VARCHAR(100) PRIMARY KEY,
     SchoolName VARCHAR(100),
-    SchoolPackage VARCHAR(255),
+    SchoolPackage TEXT,
     EstablishmentYear INT,
     FOREIGN KEY (SchoolName) REFERENCES School(Name)
 );
@@ -33,6 +41,7 @@ CREATE TABLE Professor (
     Name VARCHAR(100),
     Gender VARCHAR(10),
     Email VARCHAR(100),
+    Gender VARCHAR(100),
     Title VARCHAR(100),
     SchoolName VARCHAR(100),
     Office VARCHAR(100),
@@ -94,7 +103,8 @@ CREATE TABLE Course (
     GradeDistribution DECIMAL(3,2),
     Quota INT,
     Location VARCHAR(100),
-    FOREIGN KEY (InstructorID) REFERENCES Professor(InstructorID)
+    FOREIGN KEY (InstructorID) REFERENCES Professor(InstructorID),
+    FOREIGN KEY (TA) REFERENCES PhDstudent(StudentID)
 );
 
 CREATE TABLE Enrolls (
@@ -157,3 +167,7 @@ CREATE TABLE Club (
     ClubMembers TEXT,
     Budget DECIMAL(12,2)
 );
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

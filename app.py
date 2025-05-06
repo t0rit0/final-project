@@ -7,6 +7,18 @@ import os
 from dbweb.students import student_management
 from dbweb.professors import professor_management
 from dbweb.custom_sql import custom_sql
+from dbweb.school import school_management
+from dbweb.college import college_management
+from dbweb.major import major_management
+from dbweb.phdstudent import phdstudent_management
+from dbweb.course import course_management
+from dbweb.enrolls import enrolls_management
+from dbweb.lab import lab_management
+from dbweb.supervises import supervises_management
+from dbweb.club_activity import club_activity_management
+from dbweb.collegetutor import collegetutor_management
+from dbweb.collegetutoring import collegetutoring_management
+from dbweb.club import club_management
 
 # Load database config from YAML file
 def load_db_config():
@@ -76,7 +88,7 @@ def run_query(query, params=None):
 st.title("CSC 3170 Database Web Interface")
 
 menu = [
-    "Students", "Professors", "Run Custom SQL"
+    "Students", "Professors", "School", "College", "Major", "PhDStudent", "Course", "Enrolls", "Lab", "Supervises", "ClubActivity", "CollegeTutor", "CollegeTutoring", "Club", "Run Custom SQL"
 ]
 choice = st.sidebar.selectbox("Menu", menu)
 
@@ -84,5 +96,29 @@ if choice == "Students":
     student_management()
 elif choice == "Professors":
     professor_management()
+elif choice == "School":
+    school_management()
+elif choice == "College":
+    college_management()
+elif choice == "Major":
+    major_management()
+elif choice == "PhDStudent":
+    phdstudent_management()
+elif choice == "Course":
+    course_management()
+elif choice == "Enrolls":
+    enrolls_management()
+elif choice == "Lab":
+    lab_management()
+elif choice == "Supervises":
+    supervises_management()
+elif choice == "ClubActivity":
+    club_activity_management()
+elif choice == "CollegeTutor":
+    collegetutor_management()
+elif choice == "CollegeTutoring":
+    collegetutoring_management()
+elif choice == "Club":
+    club_management()
 elif choice == "Run Custom SQL":
     custom_sql()

@@ -8,10 +8,10 @@ def lab_management():
     with st.expander("Search Labs", expanded=True):
         search_id = st.text_input("Search by Lab ID", "")
         if search_id:
-            query = "SELECT lab_id, name, InstructorID, StudentID, Funding, PhoneNumber, Email, Address, Fields, Subject FROM Lab WHERE lab_id = %s"
+            query = "SELECT LabID, Name, InstructorID, StudentID, Funding, PhoneNumber, Email, Address, Fields, Subject FROM Lab WHERE LabID = %s"
             result = run_query(query, (search_id,))
         else:
-            query = "SELECT lab_id, name, InstructorID, StudentID, Funding, PhoneNumber, Email, Address, Fields, Subject FROM Lab"
+            query = "SELECT LabID, Name, InstructorID, StudentID, Funding, PhoneNumber, Email, Address, Fields, Subject FROM Lab"
             result = run_query(query)
         if result is not None:
             st.dataframe(result)
@@ -36,7 +36,7 @@ def lab_management():
             if not new_id or not new_name or not instructor_id or not student_id or not phone or not email or not address or not fields or not subject:
                 st.warning("Please fill in all required fields.")
             else:
-                insert_query = "INSERT INTO Lab (lab_id, name, InstructorID, StudentID, Funding, PhoneNumber, Email, Address, Fields, Subject) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                insert_query = "INSERT INTO Lab (LabID, Name, InstructorID, StudentID, Funding, PhoneNumber, Email, Address, Fields, Subject) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 result = run_query(insert_query, (new_id, new_name, instructor_id, student_id, funding, phone, email, address, fields, subject))
                 if result:
                     st.success(f"Lab '{new_name}' added successfully.")

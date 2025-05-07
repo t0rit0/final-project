@@ -6,12 +6,12 @@ def course_management():
 
     # Search section
     with st.expander("Search Courses", expanded=True):
-        search_id = st.text_input("Search by Course ID", "")
+        search_id = st.text_input("Search by Course ID (e.g. COMP1234)", "")
         if search_id:
-            query = "SELECT course_id, name, career, credits, section, component, schedule, year, instructor_id, ta, grade_distribution, quota, location FROM Course WHERE course_id = %s"
+            query = "SELECT CourseID, Name, Career, Credits, Section, Component, Schedule, Year, InstructorID, TA, GradeDistribution, Quota, Location FROM Course WHERE CourseID = %s"
             result = run_query(query, (search_id,))
         else:
-            query = "SELECT course_id, name, career, credits, section, component, schedule, year, instructor_id, ta, grade_distribution, quota, location FROM Course"
+            query = "SELECT CourseID, Name, Career, Credits, Section, Component, Schedule, Year, InstructorID, TA, GradeDistribution, Quota, Location FROM Course"
             result = run_query(query)
         if result is not None:
             st.dataframe(result)
@@ -21,8 +21,8 @@ def course_management():
     # Add section
     st.subheader("Add New Course")
     with st.form("add_course_form"):
-        new_id = st.text_input("Course ID")
-        new_name = st.text_input("Course Name")
+        new_id = st.text_input("Course ID (e.g. COMP1234)*")
+        new_name = st.text_input("Course Name*")
         new_career = st.text_input("Career")
         new_credits = st.number_input("Credits", min_value=0, step=1)
         new_section = st.text_input("Section")
@@ -40,7 +40,7 @@ def course_management():
                 st.warning("Please fill in all fields.")
             else:
                 insert_query = """INSERT INTO Course 
-                    (course_id, name, career, credits, section, component, schedule, year, instructor_id, ta, grade_distribution, quota, location) 
+                    (CourseID, Name, Career, Credits, Section, Component, Schedule, Year, InstructorID, TA, GradeDistribution, Quota, Location) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                 result = run_query(insert_query, (new_id, new_name, new_career, new_credits, new_section, new_component, new_schedule, new_year, new_instructor_id, new_ta, new_grade_distribution, new_quota, new_location))
                 if result:

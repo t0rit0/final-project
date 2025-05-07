@@ -6,11 +6,12 @@ def supervises_management():
     menu = ["Search by ID", "Add New Supervises"]
     choice = st.radio("Select Action", menu)
     if choice == "Search by ID":
-        supervises_id = st.text_input("Enter Supervises ID")
+        instructor_id = st.text_input("Enter Instructor ID")
+        lab_id = st.text_input("Enter Lab ID")
         if st.button("Search"):
             if supervises_id:
-                query = "SELECT supervises_id, professor_id, phdstudent_id, lab_id FROM Supervises WHERE supervises_id = %s"
-                result = run_query(query, (supervises_id,))
+                query = "SELECT InstructorID, LabID FROM Supervises WHERE InstructorID = %s AND LabID = %s"
+                result = run_query(query, (instructor_id, lab_id))
                 if result:
                     st.dataframe(result)
                 else:
@@ -19,15 +20,13 @@ def supervises_management():
                 st.warning("Please enter a Supervises ID.")
     elif choice == "Add New Supervises":
         with st.form("add_supervises_form"):
-            supervises_id = st.text_input("Supervises ID")
-            professor_id = st.text_input("Professor ID")
-            phdstudent_id = st.text_input("PhDStudent ID")
+            instructor_id = st.text_input("Instructor ID")
             lab_id = st.text_input("Lab ID")
             submitted = st.form_submit_button("Add")
             if submitted:
                 if supervises_id and professor_id and phdstudent_id and lab_id:
-                    query = "INSERT INTO Supervises (supervises_id, professor_id, phdstudent_id, lab_id) VALUES (%s, %s, %s, %s)"
-                    result = run_query(query, (supervises_id, professor_id, phdstudent_id, lab_id))
+                    query = "INSERT INTO Supervises (InstructorID, LabID) VALUES (%s, %s)"
+                    result = run_query(query, (instructor_id, lab_id))
                     if result:
                         st.success("Supervises added successfully!")
                     else:

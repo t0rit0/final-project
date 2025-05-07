@@ -6,10 +6,11 @@ def club_activity_management():
 
     # Search section
     with st.expander("Search Club Activities", expanded=True):
-        search_id = st.text_input("Search by Activity ID", "")
-        if search_id:
-            query = "SELECT * FROM ClubActivity WHERE activity_id = %s"
-            result = run_query(query, (search_id,))
+        student_id = st.text_input("Search by Student ID", "")
+        club_name = st.text_input("Search by Club Name", "")
+        if student_id or club_name:
+            query = "SELECT * FROM ClubActivity WHERE StudentID = %s OR ClubName = %s"
+            result = run_query(query, (student_id, club_name))
         else:
             query = "SELECT * FROM ClubActivity"
             result = run_query(query)
@@ -21,17 +22,15 @@ def club_activity_management():
     # Add section
     st.subheader("Add New Club Activity")
     with st.form("add_club_activity_form"):
-        new_id = st.text_input("Activity ID")
-        new_name = st.text_input("Activity Name")
         student_id = st.text_input("Student ID")
         club_name = st.text_input("Club Name")
         submitted = st.form_submit_button("Add Activity")
         if submitted:
-            if not new_id or not new_name or not student_id or not club_name:
+            if not student_id or not club_name:
                 st.warning("Please fill in all fields.")
             else:
-                insert_query = "INSERT INTO ClubActivity (activity_id, name, student_id, club_name) VALUES (%s, %s, %s, %s)"
-                result = run_query(insert_query, (new_id, new_name, student_id, club_name))
+                insert_query = "INSERT INTO ClubActivity (StudentID, ClubName) VALUES (%s, %s)"
+                result = run_query(insert_query, (student_id, club_name))
                 if result:
                     st.success(f"Club Activity '{new_name}' added successfully.")
                 else:

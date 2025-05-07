@@ -6,12 +6,12 @@ def major_management():
 
     # Search section
     with st.expander("Search Majors", expanded=True):
-        search_id = st.text_input("Search by Major ID", "")
-        if search_id:
-            query = "SELECT major_id, name, school_name, school_package, establishment_year FROM Major WHERE major_id = %s"
-            result = run_query(query, (search_id,))
+        search_name = st.text_input("Search by Major Name", "")
+        if search_name:
+            query = "SELECT MajorName, SchoolName, SchoolPackage, EstablishmentYear FROM Major WHERE MajorName = %s"
+            result = run_query(query, (search_name,))
         else:
-            query = "SELECT major_id, name, school_name, school_package, establishment_year FROM Major"
+            query = "SELECT MajorName, SchoolName, SchoolPackage, EstablishmentYear FROM Major"
             result = run_query(query)
         if result is not None:
             st.dataframe(result)
@@ -21,19 +21,18 @@ def major_management():
     # Add section
     st.subheader("Add New Major")
     with st.form("add_major_form"):
-        new_id = st.text_input("Major ID")
-        new_name = st.text_input("Major Name")
-        school_name = st.text_input("School Name")
+        major_name = st.text_input("Major Name*")
+        school_name = st.text_input("School Name*")
         school_package = st.text_input("School Package")
-        establishment_year = st.text_input("Establishment Year")
+        establishment_year = st.number_input("Establishment Year", min_value=1800, max_value=2100)
         submitted = st.form_submit_button("Add Major")
         if submitted:
-            if not new_id or not new_name:
+            if not major_name or not school_name:
                 st.warning("Please fill in all fields.")
             else:
-                insert_query = "INSERT INTO Major (major_id, name, school_name, school_package, establishment_year) VALUES (%s, %s, %s, %s, %s)"
-                result = run_query(insert_query, (new_id, new_name, school_name, school_package, establishment_year))
+                insert_query = "INSERT INTO Major (MajorName, SchoolName, SchoolPackage, EstablishmentYear) VALUES (%s, %s, %s, %s)"
+                result = run_query(insert_query, (major_name, school_name, school_package, establishment_year))
                 if result:
-                    st.success(f"Major '{new_name}' added successfully.")
+                    st.success(f"Major '{major_name}' added successfully.")
                 else:
                     st.error("Failed to add major. Check for duplicate ID or database error.")

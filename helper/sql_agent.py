@@ -93,9 +93,9 @@ class SQLAgent:
 
     def _get_warning_message(self, action: str) -> str:
         warnings = {
-            "INSERT": "警告：这是一个INSERT操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行INSERT操作，这将向数据库中添加数据。请自行确认是否执行？",
-            "UPDATE": "警告：这是一个UPDATE操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行UPDATE操作，这将向数据库中添加数据。请自行确认是否执行？",
-            "DELETE": "警告：这是一个DELETE操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行DELETE操作，这将向数据库中添加数据。请自行确认是否执行？"
+            "INSERT": "警告：这是一个INSERT操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行INSERT操作，这将向数据库中添加数据。请自行确认是否执行",
+            "UPDATE": "警告：这是一个UPDATE操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行UPDATE操作，这将向数据库中修改数据。请自行确认是否执行",
+            "DELETE": "警告：这是一个DELETE操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行DELETE操作，这将向数据库中删除数据。请自行确认是否执行"
         }
         return warnings.get(action, "")
 

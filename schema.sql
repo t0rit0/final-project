@@ -33,7 +33,7 @@ CREATE TABLE Major (
     SchoolName VARCHAR(100),
     SchoolPackage TEXT,
     EstablishmentYear INT,
-    FOREIGN KEY (SchoolName) REFERENCES School(Name)
+    FOREIGN KEY (SchoolName) REFERENCES School(SchoolName)
 );
 
 CREATE TABLE Professor (
@@ -41,7 +41,6 @@ CREATE TABLE Professor (
     Name VARCHAR(100),
     Gender VARCHAR(10),
     Email VARCHAR(100),
-    Gender VARCHAR(100),
     Title VARCHAR(100),
     SchoolName VARCHAR(100),
     Office VARCHAR(100),
@@ -51,7 +50,7 @@ CREATE TABLE Professor (
     Salary DECIMAL(12,2),
     EducationBackground TEXT,
     ResearchField VARCHAR(100),
-    FOREIGN KEY (SchoolName) REFERENCES School(Name)
+    FOREIGN KEY (SchoolName) REFERENCES School(SchoolName)
 );
 
 CREATE TABLE Student (
@@ -73,9 +72,9 @@ CREATE TABLE Student (
     MailingAddress VARCHAR(255),
     EmergencyContact VARCHAR(100),
     GraduateStatus VARCHAR(50),
-    FOREIGN KEY (MajorName) REFERENCES Major(Name),
-    FOREIGN KEY (SchoolName) REFERENCES School(Name),
-    FOREIGN KEY (CollegeName) REFERENCES College(Name)
+    FOREIGN KEY (MajorName) REFERENCES Major(MajorName),
+    FOREIGN KEY (SchoolName) REFERENCES School(SchoolName),
+    FOREIGN KEY (CollegeName) REFERENCES College(CollegeName)
 );
 
 CREATE TABLE PhDStudent (
@@ -157,7 +156,7 @@ CREATE TABLE CollegeTutoring (
     CollegeName VARCHAR(100),
     PRIMARY KEY (StudentID, CollegeName),
     FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
-    FOREIGN KEY (CollegeName) REFERENCES College(Name)
+    FOREIGN KEY (CollegeName) REFERENCES College(CollegeName)
 );
 
 CREATE TABLE Club (

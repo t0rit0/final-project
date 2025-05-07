@@ -90,3 +90,14 @@ When importing data using `insert.sql`, you may encounter foreign key constraint
    SET FOREIGN_KEY_CHECKS=1;
    ```
 4. Alternatively, modify `insert.sql` to ensure proper insertion order
+
+## Acknowledgments
+
+We would like to extend our sincere gratitude to `https://github.com/gbasin` and all the contributors of the `https://github.com/gbasin/LLM-DB` project. Our project is inspired by and references the code from their repository. Their excellent work and dedication to open-source have provided us with a valuable starting point and a wealth of inspiration.
+
+The open-source spirit demonstrated by the `https://github.com/gbasin/LLM-DB` project has not only accelerated the development process of our project but also enhanced the overall quality of our code. We believe that the open-source community is a powerful force for innovation, and we are honored to be part of this ecosystem.
+
+If you are interested in learning more about the original project, please visit `https://github.com/gbasin/LLM-DB` on GitHub.
+
+## LLM helper
+We use historical data to enable the model to respond and execute operations quickly. Here are examples of four basic operations: insert, delete, query, and update. LLM only provides SQL statements, and delete and update operations will go through three rounds of review to prevent incorrect operations from causing detrimental chain reactions in the database.

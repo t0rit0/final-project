@@ -42,15 +42,19 @@ All database connection settings are stored in `config.yaml`:
 
 ```yaml
 # config.yaml
-  database:
-    host: localhost
-    user: root
-    password: ""
-    name: csc3170
+database:
+  host: localhost
+  user: root
+  password: ""
+  name: csc3170
+
+openai:
+  api_key: "your_openai_api_key"  # OpenAI API密钥
+  default_model: "gpt-3.5-turbo"  # 默认OpenAI模型
 ```
 
 - **Do not commit `config.yaml` to version control.** It is excluded via `.gitignore`.
-- Edit `config.yaml` to match your MySQL credentials.
+- Edit `config.yaml` to match your MySQL credentials and OpenAI API设置。
 
 ## Running the Application
 
@@ -73,3 +77,16 @@ All database connection settings are stored in `config.yaml`:
 - Make sure MySQL server is running and the database/schema are set up before starting the app.
 - If you change database credentials, update `config.yaml` accordingly.
 - For any issues, check error messages in the Streamlit app or terminal.
+
+## Foreign Key Constraints
+When importing data using `insert.sql`, you may encounter foreign key constraint errors if the data insertion order is incorrect. To avoid this:
+
+1. Always import `schema.sql` first to create tables with foreign key relationships
+2. When importing data, ensure referenced records exist before inserting dependent records
+3. If needed, temporarily disable foreign key checks during import:
+   ```sql
+   SET FOREIGN_KEY_CHECKS=0;
+   SOURCE path/to/insert.sql;
+   SET FOREIGN_KEY_CHECKS=1;
+   ```
+4. Alternatively, modify `insert.sql` to ensure proper insertion order

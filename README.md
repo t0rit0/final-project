@@ -93,7 +93,7 @@ When importing data using `insert.sql`, you may encounter foreign key constraint
 
 ## Acknowledgments
 
-We would like to extend our sincere gratitude to `https://github.com/gbasin` and all the contributors of the `https://github.com/gbasin/LLM-DB` project. Our project is inspired by and references the code from their repository. Their excellent work and dedication to open-source have provided us with a valuable starting point and a wealth of inspiration.
+We would like to extend our sincere gratitude to `https://github.com/gbasin` and all the contributors of the `https://github.com/gbasin/LLM-DB` project. The LLM helper in our project is inspired by and references the code from their repository. Their excellent work and dedication to open-source have provided us with a valuable starting point and a wealth of inspiration.
 
 The open-source spirit demonstrated by the `https://github.com/gbasin/LLM-DB` project has not only accelerated the development process of our project but also enhanced the overall quality of our code. We believe that the open-source community is a powerful force for innovation, and we are honored to be part of this ecosystem.
 

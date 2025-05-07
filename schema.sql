@@ -99,7 +99,7 @@ CREATE TABLE Course (
     Year INT,
     InstructorID VARCHAR(20),
     TA VARCHAR(100),
-    GradeDistribution DECIMAL(3,2),
+    GradeDistribution INT,
     Quota INT,
     Location VARCHAR(100),
     FOREIGN KEY (InstructorID) REFERENCES Professor(InstructorID),

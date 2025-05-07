@@ -3,7 +3,6 @@ import mysql.connector
 import os
 import yaml
 from typing import List, Dict, Any
-import asyncio
 
 # Load DB config (reuse logic from app.py)
 def load_db_config():
@@ -15,14 +14,14 @@ def load_db_config():
                 'host': db_cfg.get('host', 'localhost'),
                 'user': db_cfg.get('user', 'root'),
                 'password': db_cfg.get('password', ''),
-                'database': db_cfg.get('name', 'csc3170')
+                'database': db_cfg.get('name', 'rdam')
             }
     except Exception:
         return {
             'host': 'localhost',
             'user': 'root',
             'password': '',
-            'database': 'csc3170'
+            'database': 'rdam'
         }
 
 DB_CONFIG = load_db_config()
@@ -51,8 +50,15 @@ def get_schema() -> Dict[str, Any]:
 class SQLAgent:
     def __init__(self, openai_api_key=None, model=None):
         self.schema = get_schema()
-        self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
-        self.model = model or os.getenv("OPENAI_DEFAULT_MODEL", "gpt-3.5-turbo")
+        try:
+            with open(os.path.join(os.path.dirname(__file__), "..", "config.yaml"), "r") as f:
+                config = yaml.safe_load(f)
+                openai_cfg = config.get("openai", {})
+                self.openai_api_key = openai_api_key or openai_cfg.get("api_key") or os.getenv("OPENAI_API_KEY")
+                self.model = model or openai_cfg.get("default_model") or os.getenv("OPENAI_DEFAULT_MODEL", "gpt-3.5-turbo")
+        except Exception:
+            self.openai_api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
+            self.model = model or os.getenv("OPENAI_DEFAULT_MODEL", "gpt-3.5-turbo")
         openai.api_key = self.openai_api_key
 
     def _build_system_prompt(self) -> str:
@@ -73,9 +79,28 @@ class SQLAgent:
             "Response: [{\"action\": \"QUERY\", \"command\": \"SELECT * FROM Student WHERE Year = 2026 AND GPA > 3.5\"}]\n"
             "User: What tables are in the database?\n"
             "Response: [{\"action\": \"SCHEMA_INSPECTION\", \"command\": \"Tables: Student, Course, Professor, ...\"}]\n"
+            "User: Find the GPA ranking of student (125090021) within their major\n"
+            "Response: [{\"action\": \"QUERY\", \"command\": \"SELECT COUNT (*) + 1 AS rank FROM Student WHERE Major = ( SELECT Major FROM Student WHERE StudentID = '125090021') AND GPA > ( SELECT GPA FROM Student WHERE StudentID = '125090021')\"}]\n"
+            "User: Query the average GPA of undergraduate students living in Shenzhen\n"
+            "Response: [{\"action\": \"QUERY\", \"command\": \"SELECT AVG ( GPA ) FROM Student WHERE `Mailing Address` LIKE '%Shenzhen%' AND `Graduate Status` = 'Undergraduate'\"}]\n"
+            "User: Analyze the trend of average GPA by enrollment year\n"
+            "Response: [{\"action\": \"QUERY\", \"command\": \"SELECT Year, AVG ( GPA ) AS Avg_GPA FROM Student GROUP BY Year ORDER BY Year ASC\"}]\n"
+            "User: Yearly trend of professor hiring\n"
+            "Response: [{\"action\": \"QUERY\", \"command\": \"SELECT Year AS employed_year, COUNT (*) AS new_professors FROM professors GROUP BY Year ORDER BY Year\"}]\n"
+            "User: Calculate the support score for high-performing Shenzhen students in SDS (GPA ≥ 3.7, enrolled within last 3 years)\n"
+            "Response: [{\"action\": \"QUERY\", \"command\": \"SELECT COUNT (*) * 1.0 / ( SELECT COUNT (*) FROM Student WHERE School = 'SDS' AND Year >= strftime ('%Y', 'now') - 3) AS SupportScore FROM Student WHERE School = 'SDS' AND `Mailing Address` LIKE '%Shenzhen%' AND GPA >= 3.7 AND Year >= strftime ('%Y', 'now') - 3\"}]\n"
         )
 
-    async def aget_sql_advice(self, user_input: str) -> List[Dict[str, str]]:
+    def _get_warning_message(self, action: str) -> str:
+        warnings = {
+            "INSERT": "警告：这是一个INSERT操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行INSERT操作，这将向数据库中添加数据。请自行确认是否执行？",
+            "UPDATE": "警告：这是一个UPDATE操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行UPDATE操作，这将向数据库中添加数据。请自行确认是否执行？",
+            "DELETE": "警告：这是一个DELETE操作。代理不会实际执行或修改数据库，仅提供建议SQL语句。若执行DELETE操作，这将向数据库中添加数据。请自行确认是否执行？"
+        }
+        return warnings.get(action, "")
+
+    def get_sql_advice(self, user_input: str) -> List[Dict[str, str]]:
+        # Always check schema first
         schema_info = self.schema
         system_prompt = self._build_system_prompt() + "\nThe following is the schema for the database entities and their attributes:\n" + str(schema_info)
         messages = [
@@ -83,16 +108,27 @@ class SQLAgent:
             {"role": "user", "content": user_input}
         ]
         try:
-            loop = asyncio.get_event_loop()
-            response = await loop.run_in_executor(None, lambda: openai.ChatCompletion.create(
+            response = openai.ChatCompletion.create(
                 model=self.model,
                 messages=messages,
                 temperature=0,
                 max_tokens=1024
-            ))
+            )
             content = response["choices"][0]["message"]["content"]
             import json
-            return json.loads(content)
+            result = json.loads(content)
+            
+            # Add warning messages for modification operations
+            modified_result = []
+            for item in result:
+                modified_result.append(item)
+                if item["action"] in ["INSERT", "UPDATE", "DELETE"]:
+                    modified_result.append({
+                        "action": "WARNING",
+                        "command": item["command"] + "/n/n" + self._get_warning_message(item["action"])
+                    })
+            
+            return modified_result
         except Exception as e:
             return [{"action": "ERROR", "command": str(e)}]
 
@@ -100,6 +136,3 @@ class SQLAgent:
 agent_instance = SQLAgent()
 def get_sql_agent_advice(user_input: str):
     return agent_instance.get_sql_advice(user_input)
-
-async def aget_sql_agent_advice(user_input: str):
-    return await agent_instance.aget_sql_advice(user_input)

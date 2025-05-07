@@ -23,13 +23,15 @@ def club_activity_management():
     with st.form("add_club_activity_form"):
         new_id = st.text_input("Activity ID")
         new_name = st.text_input("Activity Name")
+        student_id = st.text_input("Student ID")
+        club_name = st.text_input("Club Name")
         submitted = st.form_submit_button("Add Activity")
         if submitted:
-            if not new_id or not new_name:
+            if not new_id or not new_name or not student_id or not club_name:
                 st.warning("Please fill in all fields.")
             else:
-                insert_query = "INSERT INTO ClubActivity (activity_id, name) VALUES (%s, %s)"
-                result = run_query(insert_query, (new_id, new_name))
+                insert_query = "INSERT INTO ClubActivity (activity_id, name, student_id, club_name) VALUES (%s, %s, %s, %s)"
+                result = run_query(insert_query, (new_id, new_name, student_id, club_name))
                 if result:
                     st.success(f"Club Activity '{new_name}' added successfully.")
                 else:

@@ -22,12 +22,12 @@ def enrolls_management():
             enrolls_id = st.text_input("Enrolls ID")
             student_id = st.text_input("Student ID")
             course_id = st.text_input("Course ID")
-            # Add more fields as needed based on schema
+            grade = st.text_input("Grade")
             submitted = st.form_submit_button("Add")
             if submitted:
                 if enrolls_id and student_id and course_id:
-                    query = "INSERT INTO Enrolls (enrolls_id, student_id, course_id) VALUES (%s, %s, %s)"
-                    result = run_query(query, (enrolls_id, student_id, course_id))
+                    query = "INSERT INTO Enrolls (enrolls_id, student_id, course_id, grade) VALUES (%s, %s, %s, %s)"
+                    result = run_query(query, (enrolls_id, student_id, course_id, grade))
                     if result:
                         st.success("Enrolls added successfully!")
                     else:

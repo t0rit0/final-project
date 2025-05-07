@@ -24,14 +24,16 @@ This project is a web interface for managing university data using a MySQL datab
      USE csc3170;
      ```
 
-4. **Import the Schema**
+4. **Import the Schema and Data**
    - From the MySQL prompt or terminal:
-     ```
+     ```sql
      SOURCE path/to/schema.sql;
+     SOURCE path/to/insert.sql;
      ```
    - Or, using the command line:
      ```
      mysql -u root -p csc3170 < schema.sql
+     mysql -u root -p csc3170 < insert.sql
      ```
 
 ## Configuration

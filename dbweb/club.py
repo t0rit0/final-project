@@ -23,13 +23,16 @@ def club_management():
     with st.form("add_club_form"):
         new_id = st.text_input("Club ID")
         new_name = st.text_input("Club Name")
+        new_president = st.text_input("President")
+        new_members = st.text_area("Club Members")
+        new_budget = st.number_input("Budget", min_value=0.0, format="%.2f")
         submitted = st.form_submit_button("Add Club")
         if submitted:
             if not new_id or not new_name:
                 st.warning("Please fill in all fields.")
             else:
-                insert_query = "INSERT INTO Club (club_id, name) VALUES (%s, %s)"
-                result = run_query(insert_query, (new_id, new_name))
+                insert_query = "INSERT INTO Club (club_id, club_name, president, club_members, budget) VALUES (%s, %s, %s, %s, %s)"
+                result = run_query(insert_query, (new_id, new_name, new_president, new_members, new_budget))
                 if result:
                     st.success(f"Club '{new_name}' added successfully.")
                 else:

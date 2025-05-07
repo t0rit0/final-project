@@ -1,0 +1,12 @@
+# Example configuration file - rename to config.yaml and fill in your actual values
+database:
+  host: "localhost"  # Database server host
+  user: "your_username"  # Database username
+  password: "your_password"  # Database password
+  name: "your_database_name"  # Database name
+
+openai:
+  api_key: "your_openai_api_key"  # OpenAI API key
+  default_model: "gpt-3.5-turbo"  # Default OpenAI model
+
+# Add any additional configuration sections as needed

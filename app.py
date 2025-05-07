@@ -15,7 +15,7 @@ from dbweb.course import course_management
 from dbweb.enrolls import enrolls_management
 from dbweb.lab import lab_management
 from dbweb.supervises import supervises_management
-from dbweb.club_activity import club_activity_management
+from dbweb.clubactivity import club_activity_management
 from dbweb.collegetutor import collegetutor_management
 from dbweb.collegetutoring import collegetutoring_management
 from dbweb.club import club_management
@@ -30,7 +30,7 @@ def load_db_config():
                 'host': db_cfg.get('host', 'localhost'),
                 'user': db_cfg.get('user', 'root'),
                 'password': db_cfg.get('password', ''),
-                'database': db_cfg.get('name', 'csc3170')
+                'database': db_cfg.get('name', 'rdam')
             }
     except Exception as e:
         st.error(f"Failed to load database config: {e}")
@@ -39,7 +39,7 @@ def load_db_config():
             'host': 'localhost',
             'user': 'root',
             'password': '',
-            'database': 'csc3170'
+            'database': 'rdam'
         }
 
 # Database connection settings

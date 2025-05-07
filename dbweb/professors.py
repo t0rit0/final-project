@@ -9,7 +9,7 @@ def professor_management():
             search_id = st.text_input("Search by Instructor ID", "")
         with col2:
             search_name = st.text_input("Search by Name", "")
-    query = "SELECT * FROM Professor"
+    query = "SELECT InstructorID, Name, Gender, Email, Title, SchoolName, Office, TeachingAssignments, Publications, Year, Salary, EducationBackground, ResearchField FROM Professor"
     params = []
     if search_id and search_name:
         query += " WHERE InstructorID LIKE %s AND Name LIKE %s"

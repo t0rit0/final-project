@@ -9,10 +9,10 @@ def supervises_management():
         supervises_id = st.text_input("Enter Supervises ID")
         if st.button("Search"):
             if supervises_id:
-                query = "SELECT * FROM Supervises WHERE supervises_id = %s"
+                query = "SELECT supervises_id, professor_id, phdstudent_id, lab_id FROM Supervises WHERE supervises_id = %s"
                 result = run_query(query, (supervises_id,))
                 if result:
-                    st.write(result)
+                    st.dataframe(result)
                 else:
                     st.info("No Supervises found with that ID.")
             else:
@@ -22,12 +22,12 @@ def supervises_management():
             supervises_id = st.text_input("Supervises ID")
             professor_id = st.text_input("Professor ID")
             phdstudent_id = st.text_input("PhDStudent ID")
-            # Add more fields as needed based on schema
+            lab_id = st.text_input("Lab ID")
             submitted = st.form_submit_button("Add")
             if submitted:
-                if supervises_id and professor_id and phdstudent_id:
-                    query = "INSERT INTO Supervises (supervises_id, professor_id, phdstudent_id) VALUES (%s, %s, %s)"
-                    result = run_query(query, (supervises_id, professor_id, phdstudent_id))
+                if supervises_id and professor_id and phdstudent_id and lab_id:
+                    query = "INSERT INTO Supervises (supervises_id, professor_id, phdstudent_id, lab_id) VALUES (%s, %s, %s, %s)"
+                    result = run_query(query, (supervises_id, professor_id, phdstudent_id, lab_id))
                     if result:
                         st.success("Supervises added successfully!")
                     else:

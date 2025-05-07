@@ -6,10 +6,10 @@ def school_management():
 
     # Search section
     with st.expander("Search Schools", expanded=True):
-        search_id = st.text_input("Search by School ID", "")
-        if search_id:
-            query = "SELECT * FROM School WHERE school_id = %s"
-            result = run_query(query, (search_id,))
+        search_name = st.text_input("Search by School Name", "")
+        if search_name:
+            query = "SELECT * FROM School WHERE SchoolName LIKE %s"
+            result = run_query(query, (f"%{search_name}%",))
         else:
             query = "SELECT * FROM School"
             result = run_query(query)
@@ -21,16 +21,32 @@ def school_management():
     # Add section
     st.subheader("Add New School")
     with st.form("add_school_form"):
-        new_id = st.text_input("School ID")
-        new_name = st.text_input("School Name")
+        col1, col2 = st.columns(2)
+        with col1:
+            school_name = st.text_input("School Name*")
+            location = st.text_input("Location")
+            website = st.text_input("Website")
+            dean = st.text_input("Dean")
+        with col2:
+            establishment_year = st.number_input("Establishment Year", min_value=1800, max_value=2100)
+            avg_gpa = st.number_input("Average GPA", min_value=0.0, max_value=4.0, step=0.01)
+            scholarships = st.text_area("Scholarships")
+        
         submitted = st.form_submit_button("Add School")
         if submitted:
-            if not new_id or not new_name:
-                st.warning("Please fill in all fields.")
+            if not school_name:
+                st.warning("Please fill in required fields (marked with *).")
             else:
-                insert_query = "INSERT INTO School (school_id, name) VALUES (%s, %s)"
-                result = run_query(insert_query, (new_id, new_name))
+                insert_query = """
+                INSERT INTO School 
+                (SchoolName, Location, Website, Dean, EstablishmentYear, SchoolAvgGPA, Scholarships)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """
+                result = run_query(insert_query, (
+                    school_name, location, website, dean, 
+                    establishment_year, avg_gpa, scholarships
+                ))
                 if result:
-                    st.success(f"School '{new_name}' added successfully.")
+                    st.success(f"School '{school_name}' added successfully.")
                 else:
-                    st.error("Failed to add school. Check for duplicate ID or database error.")
+                    st.error("Failed to add school. Check for duplicate name or database error.")
